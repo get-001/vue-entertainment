@@ -15,8 +15,8 @@
       >
         <mu-ripple class="mu-ripple" :opacity="0.7">
           <span class="name top-left">{{item.name}}</span>
-          <div class="pivotal" :class="{finish:finish}">
-            <span class="entry bottom-left">{{item.entry}}</span>
+          <div class="pivotal" :class="{finish}">
+            <span class="entry bottom-left" :class="{finish}">{{item.entry}}</span>
             <span
               class="identity bottom-right"
               :class="item.identity"
@@ -99,7 +99,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .startGame {
   z-index: 11;
   width: 100%;
@@ -111,13 +111,21 @@ export default {
   .mu-appbar {
     padding: 0;
     height: 45px;
+    .mu-appbar-left,
+    .mu-appbar-right {
+      padding: 0;
+      .mu-button {
+        width: 45px;
+        height: 45px;
+      }
+    }
+    .mu-button {
+      padding: 0;
+    }
     .mu-appbar-title {
       line-height: 45px;
       font-size: 20px;
       margin-bottom: -4px;
-    }
-    .mu-appbar-left {
-      width: 45px;
     }
   }
   .content {
@@ -162,6 +170,10 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 30px;
+        display: none;
+      }
+      .bottom-left.finish {
+        display: inline-block;
       }
       .bottom-right {
         position: absolute;

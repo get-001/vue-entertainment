@@ -13,12 +13,17 @@
       ></mu-text-field>
       <mu-ripple
         v-if="!isExamine"
+        :class="{beViewed:gameArr[currentIndex].beViewed}"
         @click="examine(currentIndex,true)"
         class="mu-ripple-card"
-      >Click Me</mu-ripple>
+      >
+        <p>点击查看</p>
+        <span class="top-right">{{'#'+('000'+(currentIndex+1)).slice(-2)}}</span>
+      </mu-ripple>
       <mu-ripple v-else @click="examine(currentIndex,false)" class="mu-ripple-card active">
         <!-- <span class="identityType">{{gameArr[currentIndex].identity|analysisIdentity}}</span> -->
         <span>{{gameArr[currentIndex]["entry"]}}</span>
+        <span class="top-right">{{'#'+('000'+(currentIndex+1)).slice(-2)}}</span>
       </mu-ripple>
       <div class="btn-wrap" v-if="!isExamine">
         <mu-button
@@ -145,10 +150,21 @@ export default {
         top: 10px;
         left: 10px;
       }
+      .top-right {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+      }
     }
     .mu-ripple-card.active {
       background: #2196f3;
       color: #fff;
+    }
+    .mu-ripple-card.beViewed {
+      background: #fff;
+      color: #aaa;
+      border: 1px solid #aaa;
     }
     .player-name {
       position: absolute;
