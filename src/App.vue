@@ -131,7 +131,7 @@ export default {
         blankMax: 1
       },
       customWords: {
-        isUse: true,
+        isUse: false,
         dinting: "番茄",
         civilian: "西红柿"
       },
@@ -140,11 +140,19 @@ export default {
       getInto: false,
       gameArr: [],
       showGameInterface: false,
-      entry:[]
+      entry: []
     };
   },
-  mounted(){
-    
+  mounted() {
+    axios
+      .get("http://api.a-1.vip", {
+        params: {
+          url: "http://a-1.vip/demo/dinting/data/data.json"
+        }
+      })
+      .then(({ data }) => {
+        this.entry = data;
+      });
   },
   methods: {
     startAgain() {
@@ -191,6 +199,14 @@ export default {
       if (this.customWords.isUse) {
         entry.civilian = this.customWords.civilian;
         entry.dinting = this.customWords.dinting;
+      } else {
+        if (this.entry.length == 0) {
+          alert("没有可用的词条！");
+          return;
+        }
+        let index = this.randomNum(0, this.entry.length - 1);
+        entry.civilian = this.entry[index].civilian;
+        entry.dinting = this.entry[index].dinting;
       }
       for (let i = 0; i < len; i++) {
         arr.push({
