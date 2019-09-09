@@ -1,0 +1,39 @@
+<?php
+	header("Access-Control-Allow-Origin: *");
+
+    $type = getParam('type');
+    $data = getParam('data');
+
+    if($type==='getAll'){
+        echojson (file_get_contents('./data/data.json'));
+    }else if($type==='get'){
+
+    }else if($type==='dle'){
+
+    }
+
+/**
+ * 获取GET或POST过来的参数
+ * @param $key 键值
+ * @param $default 默认值
+ * @return 获取到的内容（没有则为默认值）
+ */
+function getParam($key, $default = '') {
+    return trim($key && is_string($key)?(isset($_POST[$key])?$_POST[$key]:(isset($_GET[$key])?$_GET[$key]:$default)):$default); 
+}
+
+/**
+ * 输出一个json或jsonp格式的内容
+ * @param $data 数组内容
+ */
+function echojson($data) {
+    //json和jsonp通用
+    $callback = getParam('cd'); 
+    if ($callback != "") {
+        //输出jsonp格式
+        echo $callback . "(" . $data . ")"; 
+    }
+    else {
+       echo $data; 
+    }
+}

@@ -1,9 +1,9 @@
 <template>
   <div class="startGame" style="padding:0;">
-    <mu-appbar style="width: 100%;" color="green500">
+    <mu-appbar style="width: 100%;" color="primary">
       <mu-button icon slot="left" @click="closePage">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-      </mu-button>游戏进行中...
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </mu-button>{{finish?`游戏结束：${triumphType}获胜`:'游戏进行中...'}}
     </mu-appbar>
     <div class="content">
       <div
@@ -36,13 +36,24 @@
 
 <script>
 export default {
-  props: ["gameArr"],
   data() {
     return {
+      gameArr: [],
       openSimple: false,
       triumphType: "",
       finish: false
     };
+  },
+  beforeRouteEnter(to, from, next) {
+    // 要注意：此时组件没有完全加载好，所以拿不到this。 this === undefined
+    next(vm => {
+      // 通过这种方式(回调)就可以拿到this了、
+      if (to.params.gameArr) {
+        vm.gameArr = to.params.gameArr || [];
+      } else {
+        vm.$router.replace({ name: "home" });
+      }
+    });
   },
   filters: {
     analysisIdentity(type) {
@@ -58,7 +69,7 @@ export default {
   },
   methods: {
     closePage() {
-      this.$emit("closePage");
+        this.$router.replace({ name: "home" });
     },
     open(index) {
       this.gameArr[index].open = true;
@@ -93,7 +104,7 @@ export default {
     },
     startAgain() {
       this.openSimple = false;
-      this.$emit("startAgain");
+      this.$router.replace({ name: "home" });
     }
   }
 };
@@ -101,13 +112,9 @@ export default {
 
 <style lang="less">
 .startGame {
-  z-index: 11;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #fff;
+  height: 100vh;
+  position: relative;
+  
   .mu-appbar {
     padding: 0;
     height: 45px;
@@ -143,7 +150,7 @@ export default {
       color: #2196f3;
       border: 1px solid #2196f3;
       border-radius: 4px;
-      background: #fff;
+      // background: #fff;
       font-size: 20px;
       -webkit-user-select: none;
       -moz-user-select: none;

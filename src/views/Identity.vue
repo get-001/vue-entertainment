@@ -5,7 +5,7 @@
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
       </mu-button>查看词条
     </mu-appbar>
-    <div class="content">
+    <div class="content" v-if="gameArr.length!==0">
       <mu-text-field
         class="player-name"
         v-model="gameArr[currentIndex].name"
@@ -17,7 +17,7 @@
         @click="examine(currentIndex,true)"
         class="mu-ripple-card"
       >
-        <p>点击查看</p>
+        <p>{{gameArr[currentIndex].beViewed?'已被查看':'点击查看'}}</p>
         <span class="top-right">{{'#'+('000'+(currentIndex+1)).slice(-2)}}</span>
       </mu-ripple>
       <mu-ripple v-else @click="examine(currentIndex,false)" class="mu-ripple-card active">
@@ -53,14 +53,26 @@
 import { setTimeout, clearTimeout } from "timers";
 
 export default {
-  props: ["gameArr"],
+  props: ["data"],
   data() {
     return {
       playerName: "xxx",
       currentIndex: 0,
       isExamine: false,
-      timer: null
+      timer: null,
+      gameArr: []
     };
+  },
+  beforeRouteEnter(to, from, next) {
+    // 要注意：此时组件没有完全加载好，所以拿不到this。 this === undefined
+    next(vm => {
+      // 通过这种方式(回调)就可以拿到this了、
+      if (to.params.gameArr) {
+        vm.gameArr = to.params.gameArr || [];
+      } else {
+        vm.$router.replace({ name: "home" });
+      }
+    });
   },
   filters: {
     analysisIdentity(type) {
@@ -76,10 +88,11 @@ export default {
   },
   methods: {
     closePage() {
-      this.$emit("closePage");
+      this.$router.replace({ name: "home" });
     },
     open() {
-      this.$emit("open");
+      const gameArr = this.gameArr;
+      this.$router.replace({ name: "startGame", params: { gameArr } });
     },
     examine(index, is) {
       clearTimeout(this.timer);
@@ -97,13 +110,8 @@ export default {
 
 <style lang="less">
 .Begin {
-  z-index: 11;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #fff;
+  height: 100vh;
+  position: relative;
 
   .mu-appbar {
     padding: 0;
@@ -132,7 +140,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #fff;
+      // background-color: #fff;
       border-radius: 10px;
       color: #2196f3;
       border: 1px solid #2196f3;
